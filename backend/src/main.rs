@@ -8,6 +8,7 @@ use axum::{extract::State, routing::get, Json, Router};
 use serde::Serialize;
 use serde_json::{json, Value};
 use tokio::sync::Mutex;
+use tower_http::services::{ServeDir, ServeFile};
 
 // California bounding box: min_lat, max_lat, min_lon, max_lon
 const CA: (f64, f64, f64, f64) = (32.5, 42.0, -124.5, -114.0);
@@ -126,10 +127,19 @@ async fn main() {
         client,
     };
 
+    let static_dir = std::env::var("STATIC_DIR").unwrap_or_else(|_| "../frontend/dist".to_string());
+    let index_file = format!("{static_dir}/index.html");
+
     let app = Router::new()
         .route("/api/health", get(health))
         .route("/api/trains", get(trains))
+        .fallback_service(ServeDir::new(&static_dir).not_found_service(ServeFile::new(index_file)))
         .with_state(state);
+    
+    // let app = Router::new()
+    //     .route("/api/health", get(health))
+    //     .route("/api/trains", get(trains))
+    //     .with_state(state);
 
     let port = std::env::var("PORT").unwrap_or_else(|_| "3000".to_string());
     let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{port}"))
