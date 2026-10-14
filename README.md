@@ -4,7 +4,7 @@ Live map of Amtrak trains in California. Built with a Rust (axum) backend and a 
 
 **Live demo:** https://rail-tracker-645740852406.us-central1.run.app/
 
-![Screenshot](docs/screenshot.png)
+![Screenshot](/app-screenshot-10-14.png)
 
 ## What it does
 
