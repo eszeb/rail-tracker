@@ -1,112 +1,107 @@
 html, body, #root { height: 100%; margin: 0; }
-/* :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+.app {
+  --bg: #ffffff;
+  --fg: #202124;
+  --muted: rgba(32, 33, 36, 0.6);
+  --line: rgba(32, 33, 36, 0.12);
+  --hover: rgba(32, 33, 36, 0.06);
+  --shadow: 0 2px 12px rgba(0, 0, 0, 0.22);
+  height: 100%;
+  position: relative;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+.app.dark {
+  --bg: #202124;
+  --fg: #dddddd;
+  --muted: rgba(221, 221, 221, 0.65);
+  --line: rgba(221, 221, 221, 0.15);
+  --hover: rgba(221, 221, 221, 0.08);
+  --shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
+.app .leaflet-container { font-family: inherit; }
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
+/* Title card (top left) */
+.panel {
+  position: absolute;
+  z-index: 1000;
+  top: 12px;
+  left: 12px;
+  width: 270px;
+  max-width: calc(100vw - 84px);
   box-sizing: border-box;
+  padding: 12px;
+  border-radius: 16px;
+  background: var(--bg);
+  color: var(--fg);
+  box-shadow: var(--shadow);
+  font-size: 13px;
 }
+.titlebar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.titlebar > div:first-child { min-width: 0; }
+.title { font-size: 15px; font-weight: 600; }
+.status { display: flex; align-items: center; gap: 6px; margin-top: 2px; color: var(--muted); font-size: 12px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex: none; background: #9aa0a6; }
+.dot.ok { background: #1e8e3e; }
+.dot.warn { background: #f9ab00; }
+.dot.error { background: #d93025; }
+.divider { height: 1px; background: var(--line); margin: 10px -12px; }
+.section-label { padding: 0 8px 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
 
-body {
-  margin: 0;
+/* Route rows */
+.route-row {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 6px 8px; border: none; border-radius: 8px;
+  background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer;
 }
+.route-row:hover { background: var(--hover); }
+.route-row.off .label { opacity: 0.5; }
+.swatch { width: 12px; height: 12px; border-radius: 50%; border: 2px solid; box-sizing: border-box; flex: none; }
+.key-link { display: block; padding: 4px 8px; color: inherit; opacity: 0.75; font-size: 12px; text-decoration: none; }
+.key-link:hover { opacity: 1; text-decoration: underline; }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+/* Dark mode slider */
+.switch {
+  position: relative; flex: none; width: 58px; height: 30px; padding: 0; box-sizing: border-box;
+  border: 1px solid var(--line); border-radius: 15px; background: var(--hover); cursor: pointer;
 }
+.switch .thumb {
+  position: absolute; top: 2px; left: 2px; width: 24px; height: 24px;
+  border-radius: 50%; background: var(--fg); transition: transform 0.2s ease;
+}
+.switch[aria-checked='true'] .thumb { transform: translateX(28px); }
+.switch .icon {
+  position: absolute; top: 0; width: 28px; height: 28px; line-height: 28px;
+  text-align: center; font-size: 15px; color: var(--muted); z-index: 1;
+}
+.switch .sun { left: 0; }
+.switch .moon { right: 0; }
+.switch[aria-checked='false'] .sun,
+.switch[aria-checked='true'] .moon { color: var(--bg); }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
+/* Bottom right: zoom buttons above the Amtraker credit */
+.br-stack {
+  position: absolute; z-index: 1000; right: 12px; bottom: 24px;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
 }
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
+.zoom {
+  display: flex; flex-direction: column; overflow: hidden;
+  border-radius: 12px; background: var(--bg); color: var(--fg); box-shadow: var(--shadow);
 }
-p {
-  margin: 0;
+.zoom button { width: 40px; height: 40px; border: none; background: transparent; color: inherit; font-size: 22px; cursor: pointer; }
+.zoom button:hover { background: var(--hover); }
+.zoom .sep { height: 1px; background: var(--line); }
+.credit {
+  padding: 6px 10px; border-radius: 999px; font-size: 12px;
+  background: var(--bg); color: var(--fg); box-shadow: var(--shadow);
 }
+.credit a { color: inherit; text-decoration: underline; }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
-} */
+/* Leaflet's own controls follow the theme */
+.app .leaflet-control-attribution { background: var(--bg); color: var(--fg); }
+.app .leaflet-control-attribution a { color: inherit; text-decoration: underline; }
+.app .leaflet-control-layers { background: var(--bg); color: var(--fg); border: none; border-radius: 12px; box-shadow: var(--shadow); }
+.app.dark .leaflet-control-layers-toggle { filter: invert(0.9); }
+.app .leaflet-popup-content-wrapper { background: var(--bg); color: var(--fg); border-radius: 12px; box-shadow: var(--shadow); }
+.app .leaflet-popup-tip { background: var(--bg); }
