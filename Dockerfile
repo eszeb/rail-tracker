@@ -4,6 +4,7 @@ WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ ./
+COPY .env /app/.env
 RUN npm run build
 
 # 2) Build the Rust binary
