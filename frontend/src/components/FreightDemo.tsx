@@ -1,15 +1,21 @@
 import { useEffect, useState } from 'react'
-import { Marker, Polyline, Popup } from 'react-leaflet'
-import { divIcon } from 'leaflet'
+import { Layer, Marker, Source } from 'react-map-gl/maplibre'
+import type { Feature, LineString } from 'geojson'
 
-type Point = [number, number] // [lat, lon]
+type Point = [number, number] // [longitude, latitude]
 
 // Rough straight lines between towns. NOT real track geometry.
 const ROUTE: Point[] = [
-  [34.056, -118.236], // Los Angeles
-  [34.108, -117.289], // San Bernardino
-  [34.9, -117.02], // Barstow
+  [-118.236, 34.056], // Los Angeles
+  [-117.289, 34.108], // San Bernardino
+  [-117.02, 34.9], // Barstow
 ]
+
+const LINE: Feature<LineString> = {
+  type: 'Feature',
+  properties: {},
+  geometry: { type: 'LineString', coordinates: ROUTE },
+}
 
 function pointAt(route: Point[], progress: number): Point {
   const lengths = route.slice(1).map((p, i) => Math.hypot(p[0] - route[i][0], p[1] - route[i][1]))
@@ -28,12 +34,6 @@ function pointAt(route: Point[], progress: number): Point {
   return route[route.length - 1]
 }
 
-const icon = divIcon({
-  html: `<div style='background:#555;color:white;padding:2px 6px;border-radius:4px;font-size:11px;white-space:nowrap;'>SIMULATED</div>`,
-  className: '',
-  iconAnchor: [30, 10],
-})
-
 export default function FreightDemo() {
   const [progress, setProgress] = useState(0)
 
@@ -42,11 +42,21 @@ export default function FreightDemo() {
     return () => clearInterval(id)
   }, [])
 
+  const [lon, lat] = pointAt(ROUTE, progress)
+
   return (
     <>
-      <Polyline positions={ROUTE} pathOptions={{ color: '#555', dashArray: '6 6' }} />
-      <Marker position={pointAt(ROUTE, progress)} icon={icon}>
-        <Popup>Simulated freight train (demo data, not a real train)</Popup>
+      <Source id='freight-demo' type='geojson' data={LINE}>
+        <Layer
+          id='freight-demo-line'
+          type='line'
+          paint={{ 'line-color': '#777777', 'line-width': 2, 'line-dasharray': [2, 2] }}
+        />
+      </Source>
+      <Marker longitude={lon} latitude={lat} anchor='center'>
+        <div className='sim-badge' title='Simulated freight train (demo data, not a real train)'>
+          SIMULATED
+        </div>
       </Marker>
     </>
   )
