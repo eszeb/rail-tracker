@@ -26,6 +26,8 @@ Passenger trains have public real-time data; large freight railroads generally d
 - Frontend: cd frontend, then npm install and npm run dev (open http://localhost:5173)
 
 ## Data sources and credits
-
-- Train data: Amtraker (https://amtraker.com), licensed ODC-By
-- Map: OpenStreetMap contributors; rail overlay: OpenRailwayMap
+ 
+- Train data: [Amtraker](https://amtraker.com), licensed ODC-By
+- Basemap: © [CARTO](https://carto.com/attributions), © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors
+- Rail overlay: [OpenRailwayMap](https://www.openrailwaymap.org/), data © OpenStreetMap contributors, style CC-BY-SA 2.0
+- Map rendering: [MapLibre GL JS](https://maplibre.org/) via react-map-gl
