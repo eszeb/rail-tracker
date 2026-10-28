@@ -114,8 +114,11 @@ async fn trains(State(state): State<AppState>) -> Json<Vec<Train>> {
 
 #[tokio::main]
 async fn main() {
+    let contact = std::env::var("AMTRAKER_CONTACT")
+    .unwrap_or_else(|_| "https://github.com/eszeb/rail-tracker".to_string());
+
     let client = reqwest::Client::builder()
-        .user_agent("rail-tracker (redacted@example.com)")
+        .user_agent(format!("rail-tracker ({contact})"))
         .build()
         .expect("could not build HTTP client");
 
@@ -135,7 +138,7 @@ async fn main() {
         .route("/api/trains", get(trains))
         .fallback_service(ServeDir::new(&static_dir).not_found_service(ServeFile::new(index_file)))
         .with_state(state);
-    
+
     // let app = Router::new()
     //     .route("/api/health", get(health))
     //     .route("/api/trains", get(trains))
