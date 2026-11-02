@@ -109,10 +109,18 @@ async function loadStyle(theme: Theme): Promise<StyleSpecification> {
 
 // CARTO wants the key on every tile, font and sprite request, not just the style file.
 function addCartoKey(url: string) {
-  if (url.includes('cartocdn.com') && !url.includes('key=')) {
-    return { url: url + (url.includes('?') ? '&' : '?') + 'key=' + CARTO_KEY }
+  try {
+    const parsed = new URL(url)
+    const host = parsed.hostname.toLowerCase()
+    const isCartoHost = host === 'cartocdn.com' || host.endsWith('.cartocdn.com')
+    if (isCartoHost && !parsed.searchParams.has('key')) {
+      parsed.searchParams.set('key', CARTO_KEY)
+      return { url: parsed.toString() }
+    }
+    return { url }
+  } catch {
+    return { url }
   }
-  return { url }
 }
 
 // Zoom out only as far as California fits the window; pan only within that view.
